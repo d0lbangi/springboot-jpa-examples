@@ -29,4 +29,9 @@ public class Notice {
     @Column
     private LocalDateTime regDate;
 
+    @Column
+    private int hits;
+
+    @Column
+    private int likes;
 }

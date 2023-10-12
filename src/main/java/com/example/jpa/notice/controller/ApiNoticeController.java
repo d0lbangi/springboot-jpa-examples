@@ -165,4 +165,29 @@ public class ApiNoticeController {
         noticeRepository.save(notice);
         return notice;
     }*/
+
+
+    15. 공지사항에 글을 등록하기 위한 글작성에 대한 API 만들기
+    [조건]
+    - REST API 형식으로 구현
+    - HTTP METHOD 는 POST
+    - 요청 주소는 "/api/notice"
+    - 전달되는 값은 application/json 형식의 제목, 내용을 입력 받음
+    - 공지사항 등록일은 현재시간을 저장, 공지사항 조회수와 좋아요수는 초기값을 0으로 설정
+    - 전달된 값을 저장하기 위한 JPA Repository 와 Entity를 통해서 Database에 저장
+    - 리턴값은 저장된 id값이 포함된 Entity 리턴
+    @PostMapping("/api/notice")
+    public Notice addNotice(@RequestBody NoticeInput noticeInput) {
+
+        Notice notice = Notice.builder()
+                .title(noticeInput.getTitle())
+                .contents(noticeInput.getContents())
+                .regDate(LocalDateTime.now())
+                .hits(0)
+                .likes(0)
+                .build();
+
+        Notice resultNotice = noticeRepository.save(notice);
+        return resultNotice;
+    }
 }
