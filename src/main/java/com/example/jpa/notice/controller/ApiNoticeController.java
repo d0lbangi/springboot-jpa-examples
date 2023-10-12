@@ -2,10 +2,8 @@ package com.example.jpa.notice.controller;
 
 
 import com.example.jpa.notice.model.NoticeModel;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import jdk.vm.ci.meta.Local;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -106,14 +104,32 @@ public class ApiNoticeController {
     [조건]
     - REST API 형식으로 구현
     - HTTP METHOD 는 POST
-    - 요청 주소는 ""/api/notice2""
+    - 요청 주소는 ""/api/notice""
     - 전달되는 파라미터는 x-www-form-urlencoded 형식의 제목, 내용을 입력 받음
     - 파라미터를 공지사항 모델로 추상화하여 전달받음
     - 리턴값은 입력된 형태에 게시글ID(2)과 등록일자(현재시간)을 추가하여 모델 형태로 리턴
-    @PostMapping("/api/notice2")
+    @PostMapping("/api/notice")
     public NoticeModel addNotice(NoticeModel noticeModel) {
 
         noticeModel.setId(2);
+        noticeModel.setRegDate(LocalDateTime.now());
+
+        return noticeModel;
+    }*/
+
+
+/*    13. "공지사항에 글을 등록하기 위해서 글장석에 대한 API 만들기"
+    [조건]
+    - REST API 형식으로 구현
+    - HTTP METHOD 는 POST
+    - 요청 주소는 ""/api/notice3""
+    - 전달되는 파라미터는 application/json 형식의 제목, 내용을 입력 받음
+    - 파라미터를 공지사항 모델로 추상화하여 전달받음
+    - 리턴값은 입력된 형태에 게시글ID(3)과 등록일자(현재시간)을 추가하여 모델 형태로 리턴
+    @PostMapping("/api/notice")
+    public NoticeModel addNotice(@RequestBody NoticeModel noticeModel) {
+
+        noticeModel.setId(3);
         noticeModel.setRegDate(LocalDateTime.now());
 
         return noticeModel;
