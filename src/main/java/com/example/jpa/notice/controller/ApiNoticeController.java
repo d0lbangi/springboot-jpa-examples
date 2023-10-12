@@ -3,6 +3,8 @@ package com.example.jpa.notice.controller;
 
 import com.example.jpa.notice.model.NoticeModel;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
@@ -76,5 +78,26 @@ public class ApiNoticeController {
     @GetMapping("/api/notice/count")
     public int noticeCount() {
         return 10;
+    }
+
+/*    11. "공지사항에 글을 등록하기 위해서 글작성에 대한 API를 만들어 보세요."
+    [조건]
+    - REST API 형식으로 구현
+    - HTTP METHOD 는 POST
+    - 요청 주소는 ""/api/notice""
+    - 전달되는 파라미터는 x-www-form-urlencoded 형식의 제목, 내용을 입력 받음
+    - 파라미터는 추상화하지 않고 기본데이터 타입 형태로 전달받음
+    - 리턴값은 입력된 형태에 게시글ID(1)를 추가하여 모델 형태로 리턴*/
+    @PostMapping("/api/notice")
+    public NoticeModel addNotice(String title, String contents) {
+
+        NoticeModel notice = NoticeModel.builder()
+                .id(1)
+                .title(title)
+                .contents(contents)
+                .regDate(LocalDateTime.now())
+                .build();
+
+        return notice;
     }
 }
