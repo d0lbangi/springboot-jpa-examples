@@ -64,4 +64,17 @@ public class ApiNoticeController {
         List<NoticeModel> noticeList = new ArrayList<>();
         return noticeList;
     }
+
+/*    10. "공지사항 게시판의 목록 중 전체 개수 정보에 대한 요청을 처리하는 API를 만들어보자."
+    [조건]
+    - REST API 형식으로 구현
+    - HTTP METHOD 는 GET
+    - 요청 주소는 ""/api/notice/count""
+    - 리턴값은 게시판의 게시글 개수(정수)를 리턴
+    - [확인사항]
+    컨트롤러에서 정수형을 리턴하였더라도 클라이언트쪽에 내려가는 부분은 문자열임*/
+    @GetMapping("/api/notice/count")
+    public int noticeCount() {
+        return 10;
+    }
 }
