@@ -1,16 +1,25 @@
 package com.example.jpa.notice.controller;
 
 
+import com.example.jpa.notice.entity.Notice;
+import com.example.jpa.notice.model.NoticeInput;
 import com.example.jpa.notice.model.NoticeModel;
+import com.example.jpa.notice.repository.NoticeRepository;
 import jdk.vm.ci.meta.Local;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 public class ApiNoticeController {
+
+    private final NoticeRepository noticeRepository;
+
     /*
     @GetMapping("/api/notice")
     public String noticeString() {
@@ -118,7 +127,7 @@ public class ApiNoticeController {
     }*/
 
 
-/*    13. "공지사항에 글을 등록하기 위해서 글장석에 대한 API 만들기"
+/*    13. "공지사항에 글을 등록하기 위해서 글작성에 대한 API 만들기"
     [조건]
     - REST API 형식으로 구현
     - HTTP METHOD 는 POST
@@ -133,5 +142,27 @@ public class ApiNoticeController {
         noticeModel.setRegDate(LocalDateTime.now());
 
         return noticeModel;
+    }*/
+
+
+    /*14. 공지사항에 글을 등록하기 위한 글작성에 대한 API 만들기
+    [조건]
+    - REST API 형식으로 구현
+    - HTTP METHOD는 POST
+    - 요청 주소는 "/api/notice"
+    - 전달되는 값은 application/json 형식의 제목, 내용을 입력 받음
+    - 전달된 값을 저장하기 위한 JPA Repository 와 Entity를 통해서 Database에 저장
+    - 리턴값은 저장된 id 값이 포함된 Entity 리턴
+    @PostMapping("/api/notice")
+    public Notice addNotice(@RequestBody NoticeInput noticeInput) {
+
+        Notice notice = Notice.builder()
+                .title(noticeInput.getTitle())
+                .contents(noticeInput.getContents())
+                .regDate(LocalDateTime.now())
+                .build();
+
+        noticeRepository.save(notice);
+        return notice;
     }*/
 }

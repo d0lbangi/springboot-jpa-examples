@@ -7,14 +7,13 @@ spring:
 
   datasource:
     url: jdbc:h2:mem:backofficeDb
-    #url: jdbc:h2:file:/Users/parkkyutae/Documents/sources/github/fastcampus-demo-01/record-example/sample1/backofficeDb
     driver-class-name: org.h2.Driver
     username: root
     password: '1111'
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: create-drop
     generate-ddl: false
 
     properties:
@@ -26,6 +25,9 @@ spring:
     hiddenmethod:
       filter:
         enabled: true
+
+  mustache:
+    suffix: .html
 
 logging:
   level:
