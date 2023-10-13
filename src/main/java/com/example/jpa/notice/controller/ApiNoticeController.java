@@ -241,6 +241,7 @@ public class ApiNoticeController {
     - 데이터를 수정하는 경우는 Data 매핑에 대한 Entity로 필요없는 항목까지 받지 말고 필요한 데이터만 입력받게 작성
     - 공지사항의 글이 존재하지 않을 경우 예외사항을 발생
     - 예외처리는 ExceptionHander를 통해서 구현, 발생하는 예외에 대해서는 400, 예외 메세지를 리턴함*/
+    /*
     @ExceptionHandler(NoticeNotFoundException.class)
     public ResponseEntity<String> handlerNoticeNotFoundException(NoticeNotFoundException exception) {
         int i = 0;
@@ -250,7 +251,7 @@ public class ApiNoticeController {
     @PutMapping("/api/notice/{id}")
     public void updateNotice(@PathVariable Long id, @RequestBody NoticeInput noticeInput) {
 
-        /*Case1)
+        Case1)
         Optional<Notice> notice = noticeRepository.findById(id);
         if (!notice.isPresent()) {
             // 예외 발생
@@ -261,8 +262,8 @@ public class ApiNoticeController {
             notice.get().setContents(noticeInput.getContents());
             notice.get().setUpdateDate(LocalDateTime.now());
             noticeRepository.save(notice.get());
-        */
 
+        Case2)
         Notice notice = noticeRepository.findById(id)
                 .orElseThrow(() -> new NoticeNotFoundException("공지사항의 글이 존재하지 않습니다."));
 
@@ -271,5 +272,38 @@ public class ApiNoticeController {
         notice.setContents(noticeInput.getContents());
         notice.setUpdateDate(LocalDateTime.now());
         noticeRepository.save(notice);
+    }*/
+
+
+/*    19. 공지사항에 글을 수정하기 위한 글수정에 대한 API를 만들어 보자
+    [조건]
+    - REST API 형식으로 구현
+    - HTTP METHOD 는 PUT
+    - 요청 주소는 "/api/notice/1" ("1"은 공지사항의 글 ID로 동적으로 변함)
+    - 전달되는 값은 application.json 형식의 공지사항 글 ID, 제목, 내용 을 입력 받음
+    - 공지사항 수정일은 현재시간을 저장, 공지사항 조회수와 좋아요수는 변경하지 않음
+    - 데이터 수정하는 경우는 Data 매핑에 대한 Entity 로 필요없는 항목까지 받지 않고, 필요한 데이터만 입력받게 작성
+    - 데이터 수정일을 추가하여 수정한 날짜/시간도 함께 업데이트를 진행함*/
+    @ExceptionHandler(NoticeNotFoundException.class)
+    public ResponseEntity<String> handlerNoticeNotFoundException(NoticeNotFoundException exception) {
+        int i = 0;
+
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
+
+    @PutMapping("/api/notice/{id}")
+    public void updateNotice(@PathVariable Long id, @RequestBody NoticeInput noticeInput) {
+
+        Notice notice = noticeRepository.findById(id)
+                .orElseThrow(()-> new NoticeNotFoundException("공지사항의 글이 존재하지 않습니다."));
+
+        notice.setTitle(noticeInput.getTitle());
+        notice.setContents(noticeInput.getContents());
+        notice.setUpdateDate(LocalDateTime.now());
+        noticeRepository.save(notice);
+    }
+
+
+
+
 }
