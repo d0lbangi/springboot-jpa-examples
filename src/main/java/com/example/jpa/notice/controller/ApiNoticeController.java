@@ -10,6 +10,10 @@ import com.example.jpa.notice.model.ResponseError;
 import com.example.jpa.notice.repository.NoticeRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
@@ -462,5 +466,17 @@ public class ApiNoticeController {
                 .build());
 
         return ResponseEntity.ok().build();
+    }
+    /*    29. 데이터베이스에서 공지사항 목록중에서 파라미터로 전달된 개수만큼 리턴하는 API
+    [조건]
+    ex) 최근 5개
+    */
+    @GetMapping("/api/notice/latest/{size}")
+    public Page<Notice> noticeLatest(@PathVariable int size) {
+
+        Page<Notice> noticeList
+                = noticeRepository.findAll(
+                PageRequest.of(0,size, Sort.Direction.DESC,"regDate"));
+        return noticeList;
     }
 }
