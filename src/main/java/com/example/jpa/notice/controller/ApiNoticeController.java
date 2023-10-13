@@ -2,29 +2,20 @@ package com.example.jpa.notice.controller;
 
 
 import com.example.jpa.notice.entity.Notice;
-import com.example.jpa.notice.exception.AlreadyDeletedException;
-import com.example.jpa.notice.exception.NoticeNotFoundException;
-import com.example.jpa.notice.model.NoticeDeleteInput;
+import com.example.jpa.notice.model.DuplicateNoticeException;
 import com.example.jpa.notice.model.NoticeInput;
-import com.example.jpa.notice.model.ResponseError;
 import com.example.jpa.notice.repository.NoticeRepository;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Null;
-import java.lang.reflect.Field;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -436,16 +427,16 @@ public class ApiNoticeController {
     제목과 내용은 필수 입력 조건임(입력되지 않은 경우 400 리턴
     예외발생시 각각의 에러를 취합하여 콜렉션형태로 리턴
     */
-    @PostMapping("/api/notice")
+/*    @PostMapping("/api/notice")
     public ResponseEntity<Object> addNotice(@RequestBody @Valid NoticeInput noticeInput, Errors errors) {
 
-        /*if (noticeInput.getTitle() == null
+        *//*if (noticeInput.getTitle() == null
                 || noticeInput.getTitle().length() < 1
                 || noticeInput.getContents() == null
                 || noticeInput.getContents().length() < 1
         ) {
             return new ResponseEntity<>("입력값이 정확하지 않습니다.", HttpStatus.BAD_REQUEST);
-        }*/
+        }*//*
 
         if (errors.hasErrors()) {
             List<ResponseError> responseErrors = new ArrayList<>();
@@ -466,7 +457,7 @@ public class ApiNoticeController {
                 .build());
 
         return ResponseEntity.ok().build();
-    }
+    }*/
     /*    29. 데이터베이스에서 공지사항 목록중에서 파라미터로 전달된 개수만큼 리턴하는 API
     [조건]
     ex) 최근 5개
@@ -478,5 +469,43 @@ public class ApiNoticeController {
                 = noticeRepository.findAll(
                 PageRequest.of(0,size, Sort.Direction.DESC,"regDate"));
         return noticeList;
+    }
+
+
+
+
+    /*    30. 공지사항의 내용을 등록한 이후에 바로 동일한 제목과 내용의 공지사항을 등록하는 경우 등록을 막는 API 만들기
+    [조건]
+    - 중복 경우(조건: 동일제목, 동일내용과 등록일이 현재시간 기준 1분이내의 경우는 중복으로 판단함)
+    - 예외발생(DuplicateNoticeException)
+    */
+    @ExceptionHandler(DuplicateNoticeException.class)
+    public ResponseEntity<?> handlerDuplicateNoticeExcpetion(DuplicateNoticeException exception) {
+
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+    @PostMapping("/api/notice")
+    public ResponseEntity<Object> addNotice(@RequestBody @Valid NoticeInput noticeInput, Errors errors) {
+
+        // 중복체크
+        LocalDateTime checkDate = LocalDateTime.now().minusMinutes(1);
+        int noticeCount = noticeRepository.countByTitleAndContentsAndRegDateIsGreaterThanEqual(
+                noticeInput.getTitle()
+                , noticeInput.getContents()
+                , checkDate);
+        if (noticeCount > 0) {
+            throw new DuplicateNoticeException("1분 이내에 동일한 공지사항이 존재합니다.");
+        }
+
+        noticeRepository.save(Notice.builder()
+                .title(noticeInput.getTitle())
+                .contents(noticeInput.getContents())
+                .hits(0)
+                .likes(0)
+                .regDate(LocalDateTime.now())
+                .deleted(false)
+                .build());
+
+        return ResponseEntity.ok().build();
     }
 }
