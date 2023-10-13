@@ -303,6 +303,22 @@ public class ApiNoticeController {
         noticeRepository.save(notice);
     }
 
+/*    20. 공지사항에 글의 조회수를 증가시키는 API 만들기
+    [조건]
+    - REST API 형식으로 구현
+    - HTTP METHOD 는 PATCH
+    - 요청 주소는 "/api/notice/{id}/hits" ("1"은 공지사항의 글ID로 동적으로 변함)*/
+    @PatchMapping("/api/notice/{id}/hits")
+    public void noticeHits(@PathVariable Long id) {
+
+        Notice notice = noticeRepository.findById(id)
+                .orElseThrow(()-> new NoticeNotFoundException("공지사항의 글이 존재하지 않습니다."));
+
+        notice.setHits(notice.getHits()+1);
+
+        noticeRepository.save(notice);
+    }
+
 
 
 
