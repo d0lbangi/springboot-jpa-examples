@@ -2,17 +2,15 @@ package com.example.jpa.notice.controller;
 
 
 import com.example.jpa.notice.entity.Notice;
+import com.example.jpa.notice.exception.NoticeNotFoundException;
 import com.example.jpa.notice.model.NoticeInput;
-import com.example.jpa.notice.model.NoticeModel;
 import com.example.jpa.notice.repository.NoticeRepository;
-import jdk.vm.ci.meta.Local;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -219,7 +217,7 @@ public class ApiNoticeController {
     - 공지사항 수정일은 현재시간을 저장, 공지사항 조회수와 좋아요수는 변경하지 않음
     - 데이터를 수정하는 경우는 Data매핑에 대한 Entity로 필요없는 항목까지 받고 필요한 데이터만 입력받게 작성
     - 전달된 값을 수정하기 위한 JPA Repository와 Entity를 통해서 Database 수정*/
-    @PutMapping("/api/notice/{id}")
+/*    @PutMapping("/api/notice/{id}")
     public void updateNotice(@PathVariable Long id, @RequestBody NoticeInput noticeInput) {
 
         Optional<Notice> notice = noticeRepository.findById(id);
@@ -229,5 +227,49 @@ public class ApiNoticeController {
             notice.get().setUpdateDate(LocalDateTime.now());
             noticeRepository.save(notice.get());
         }
+    }*/
+
+
+
+/*    18. 공지사항에 글을 수정하기 위한 글수정에 대한 API 만들기
+    [조건]
+    - REST API 형식으로 구현
+    - HTTP METHOD 는 PUT
+    - 요청 주소는 "/api/notice/1" ("1"은 공지사항의 글 ID로 동적으로 변함)
+    - 전달되는 값은 application/json 형식의 공지사항 글ID, 제목, 내용을 입력 받음
+    - 공지사항 수정일은 현재시간을 저장, 공지사항 조회수와 좋아요수는 변경하지 않음
+    - 데이터를 수정하는 경우는 Data 매핑에 대한 Entity로 필요없는 항목까지 받지 말고 필요한 데이터만 입력받게 작성
+    - 공지사항의 글이 존재하지 않을 경우 예외사항을 발생
+    - 예외처리는 ExceptionHander를 통해서 구현, 발생하는 예외에 대해서는 400, 예외 메세지를 리턴함*/
+    @ExceptionHandler(NoticeNotFoundException.class)
+    public ResponseEntity<String> handlerNoticeNotFoundException(NoticeNotFoundException exception) {
+        int i = 0;
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @PutMapping("/api/notice/{id}")
+    public void updateNotice(@PathVariable Long id, @RequestBody NoticeInput noticeInput) {
+
+        /*Case1)
+        Optional<Notice> notice = noticeRepository.findById(id);
+        if (!notice.isPresent()) {
+            // 예외 발생
+            throw new NoticeNotFoundException("공지사항의 글이 존재하지 않습니다.");
+        }
+                    // 정상 작동
+            notice.get().setTitle(noticeInput.getTitle());
+            notice.get().setContents(noticeInput.getContents());
+            notice.get().setUpdateDate(LocalDateTime.now());
+            noticeRepository.save(notice.get());
+        */
+
+        Notice notice = noticeRepository.findById(id)
+                .orElseThrow(() -> new NoticeNotFoundException("공지사항의 글이 존재하지 않습니다."));
+
+        // 정상 작동
+        notice.setTitle(noticeInput.getTitle());
+        notice.setContents(noticeInput.getContents());
+        notice.setUpdateDate(LocalDateTime.now());
+        noticeRepository.save(notice);
     }
 }
