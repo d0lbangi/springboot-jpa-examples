@@ -2,6 +2,7 @@ package com.example.jpa.notice.controller;
 
 
 import com.example.jpa.notice.entity.Notice;
+import com.example.jpa.notice.exception.AlreadyDeletedException;
 import com.example.jpa.notice.exception.NoticeNotFoundException;
 import com.example.jpa.notice.model.NoticeInput;
 import com.example.jpa.notice.repository.NoticeRepository;
@@ -286,8 +287,6 @@ public class ApiNoticeController {
     - 데이터 수정일을 추가하여 수정한 날짜/시간도 함께 업데이트를 진행함*/
     @ExceptionHandler(NoticeNotFoundException.class)
     public ResponseEntity<String> handlerNoticeNotFoundException(NoticeNotFoundException exception) {
-        int i = 0;
-
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
@@ -323,15 +322,44 @@ public class ApiNoticeController {
         - REST API 형식으로 구현
         - HTTP METHOD 는 DELETE
         - 요청 주소는 "/api/notice/{id}" ("1"은 공지사항의 글ID로 동적으로 변함)*/
-    @DeleteMapping("/api/notice/{id}")
+/*    @DeleteMapping("/api/notice/{id}")
     public void deleteNotice(@PathVariable Long id) {
 
         Notice notice = noticeRepository.findById(id)
                 .orElseThrow(()-> new NoticeNotFoundException("공지사항의 글이 존재하지 않습니다."));
 
         noticeRepository.delete(notice);
+    }*/
+
+
+/*
+    23. 공지사항의 글을 삭제하기 위한 API를 만들어 보세요
+    [조건]
+    - REST API 형식으로 구현
+    - HTTP METHOD는 DELETE
+    - 요청 주소는 "/api/notice/{id}" ("1"은 공지사항의 글ID로 동적으로 변함)
+    - 게시판의 글을 물리적으로 삭제하지 않고 삭제 플래그 값을 이용하여 삭제를 진행함
+    - 삭제일시는 현재 시간으로 설정함
+    - 공지사항의 글이 이미 삭제된 경우는 200 코드와 "이미 삭제된 글입니다." 라는 메시지를 리턴함.
+*/
+    @ExceptionHandler(AlreadyDeletedException.class)
+    public ResponseEntity<String> AlreadyDeletedExceptionHandler(AlreadyDeletedException exception) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.OK);
     }
 
+    @DeleteMapping("/api/notice/{id}")
+    public void deleteNotice(@PathVariable Long id) {
 
+        Notice notice = noticeRepository.findById(id)
+                .orElseThrow(()-> new NoticeNotFoundException("공지사항의 글이 존재하지 않습니다."));
 
+        if (notice.getDeleted()) {
+            throw new AlreadyDeletedException("이미 삭제된 글입니다.");
+        }
+
+        notice.setDeleted(true);
+        notice.setDeletedDate(LocalDateTime.now());
+
+        noticeRepository.save(notice);
+    }
 }
