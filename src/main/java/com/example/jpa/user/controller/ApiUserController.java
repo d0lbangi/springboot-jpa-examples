@@ -15,6 +15,7 @@ import com.example.jpa.user.exception.UserNotFoundException;
 import com.example.jpa.user.model.*;
 import com.example.jpa.notice.model.NoticeResponse;
 import com.example.jpa.user.repository.UserRepository;
+import com.example.jpa.util.JWTUtils;
 import com.example.jpa.util.PasswordUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -494,7 +495,27 @@ public class ApiUserController {
                 .sign(Algorithm.HMAC512("fastcampus".getBytes()));
 
         return ResponseEntity.ok().body(UserLoginToken.builder().token(newToken).build());
-
     }
+
+
+    /**
+     * 47. JWT 토큰에 대한 삭제를 요청하는 API 작성
+     */
+    public ResponseEntity<?> removeToken(@RequestHeader("F-Token") String token) {
+        String email = "";
+
+        try {
+            email = JWTUtils.getIssuer(token);
+        } catch (SignatureVerificationException e) {
+            return new ResponseEntity<>("토큰 정보가 정확하지 않습니다.", HttpStatus.BAD_REQUEST);
+        }
+
+        // 세션, 쿠키삭제
+        // 클라이언트 쿠키/ 로컬스토리지/세션스토리지
+        // 블랙리스트 작성
+
+        return ResponseEntity.ok().build();
+    }
+
 }
 
