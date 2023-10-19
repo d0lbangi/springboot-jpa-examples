@@ -1,11 +1,14 @@
 package com.example.jpa.user.controller;
 
+import com.example.jpa.notice.entity.Notice;
 import com.example.jpa.notice.model.ResponseError;
+import com.example.jpa.notice.repository.NoticeRepository;
 import com.example.jpa.user.entity.User;
 import com.example.jpa.user.exception.UserNotFoundException;
 import com.example.jpa.user.model.UserInput;
 import com.example.jpa.user.model.UserResponse;
 import com.example.jpa.user.model.UserUpdate;
+import com.example.jpa.notice.model.NoticeResponse;
 import com.example.jpa.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
@@ -25,6 +28,7 @@ import java.util.List;
 public class ApiUserController {
 
     private final UserRepository userRepository;
+    private final NoticeRepository noticeRepository;
 
 
     /* 31. 사용자 등록시 입력값 유효하지 않은 경우 예외를 발생시키는 기능 작성
@@ -119,6 +123,28 @@ public class ApiUserController {
         // UserResponse userResponse = new UserResponse(user);
         UserResponse userResponse = UserResponse.of(user);
         return userResponse;
+    }
+
+
+    /**
+     * 35. 내가 작성한 공지사항 목록에 대한 API 작성
+     * 삭제일과 삭제자 아이디는 보안상 내리지 않음
+     * 작성장 정보를 모두 내리지 않고, 작성자의 아이디와 이름만 내림
+     * */
+    @GetMapping("/api/user/{id}/notice")
+    public List<NoticeResponse> userNotice(@PathVariable Long id) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(()-> new UserNotFoundException("사용자 정보가 없습니다."));
+
+        List<Notice> noticeList = noticeRepository.findByUser(user);
+
+        List<NoticeResponse> noticeResponsesList = new ArrayList<>();
+        noticeList.stream().forEach((e)-> {
+            noticeResponsesList.add(NoticeResponse.of(e));
+        });
+
+        return noticeResponsesList;
     }
 
 }
