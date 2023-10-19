@@ -29,5 +29,7 @@ public class User {
     private String phone;
     @Column
     private LocalDateTime regDate;
+    @Column
+    private LocalDateTime updateDate;
 }
 
