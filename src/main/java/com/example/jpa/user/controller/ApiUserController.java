@@ -1,7 +1,9 @@
 package com.example.jpa.user.controller;
 
 import com.example.jpa.notice.entity.Notice;
+import com.example.jpa.notice.entity.NoticeLike;
 import com.example.jpa.notice.model.ResponseError;
+import com.example.jpa.notice.repository.NoticeLikeRepository;
 import com.example.jpa.notice.repository.NoticeRepository;
 import com.example.jpa.user.entity.User;
 import com.example.jpa.user.exception.ExistsEmailException;
@@ -10,6 +12,7 @@ import com.example.jpa.user.exception.UserNotFoundException;
 import com.example.jpa.user.model.*;
 import com.example.jpa.notice.model.NoticeResponse;
 import com.example.jpa.user.repository.UserRepository;
+import com.example.jpa.util.PasswordUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpEntity;
@@ -32,7 +35,7 @@ public class ApiUserController {
 
     private final UserRepository userRepository;
     private final NoticeRepository noticeRepository;
-
+    private final NoticeLikeRepository noticeLikeRepository;
 
     /* 31. 사용자 등록시 입력값 유효하지 않은 경우 예외를 발생시키는 기능 작성
     입력값: 이메일(ID), 이름, 비밀번호, 연락처
@@ -214,15 +217,18 @@ public class ApiUserController {
     }
 
 
-    private String getEncryptPassword(String password) {
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        return bCryptPasswordEncoder.encode(password);
-    }
+
 
 
     /**
      * 38. 회원가입시 비밀번호를 암호화하여 저장하는 API를 작성해 보시오.
      * */
+
+    private String getEncryptPassword(String password) {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        return bCryptPasswordEncoder.encode(password);
+    }
+
     @PostMapping("/api/user")
     public ResponseEntity<?> addUser(@RequestBody UserInput userInput, Errors errors) {
 
@@ -244,7 +250,7 @@ public class ApiUserController {
                 .email(userInput.getEmail())
                 .userName(userInput.getUserName())
                 .phone(userInput.getPhone())
-                .password(userInput.getPassword())
+                .password(encryptPassword)
                 .regDate(LocalDateTime.now())
                 .build();
         userRepository.save(user);
@@ -336,5 +342,46 @@ public class ApiUserController {
         System.out.println(message);
     }
 
+
+    /**
+     * 42. 내가 좋아요한 공지사항을 보는 API 작성 ?????DB는 어디?
+     **/
+     @GetMapping("/api/user/{id}/notice/like")
+    public List<NoticeLike> likeNotice(@PathVariable Long id) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(()-> new UserNotFoundException("사용자 정보가 없습니다."));
+
+        List<NoticeLike> noticeLikeList = noticeLikeRepository.findByUser(user);
+
+        return noticeLikeList;
+    }
+
+    /**
+     * 43. 사용자 이메일과 비밀번호를 통해서 JWT를 발행하는 API 작성
+     * [조건]
+     * JWT 토큰발행시 사용자 정보가 유효하지 않을 때 예외 발생
+     * 사용자 정보가 존재하지 않는 경우(UserNotFoundException)에 대해서 예외 발생
+     * 비밀번호가 일치하지 않는 경우(PasswordNotMatchException)에 대해서 예외 발생
+     * */
+    @PostMapping("/api/user/login")
+    public ResponseEntity<?> createToken(@RequestBody @Valid UserLogin userLogin, Errors errors) {
+
+        List<ResponseError> responseErrorList = new ArrayList<>();
+        if (errors.hasErrors()) {
+            errors.getAllErrors().stream().forEach((e) -> {
+                responseErrorList.add(ResponseError.of((FieldError) e));
+            });
+            return new ResponseEntity<>(responseErrorList, HttpStatus.BAD_REQUEST);
+        }
+
+        User user = userRepository.findByEmail(userLogin.getEmail())
+                .orElseThrow(() -> new UserNotFoundException("사용자 정보가 없습니다."));
+
+        if (!PasswordUtils.equalPassword(userLogin.getPassword(), user.getPassword())) {
+            throw new PasswordNotMatchException("비밀번호가 일치하지 않습니다.");
+        }
+        return ResponseEntity.ok().build();
+    }
 }
 
