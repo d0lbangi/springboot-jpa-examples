@@ -14,6 +14,7 @@ import com.example.jpa.user.model.UserUpdate;
 import com.example.jpa.notice.model.NoticeResponse;
 import com.example.jpa.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -249,6 +250,36 @@ public class ApiUserController {
                 .regDate(LocalDateTime.now())
                 .build();
         userRepository.save(user);
+
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 39. 사용자 회원 탈퇴 기능에 대한 API 작성
+     * 회원정보가 존재하지 않은 경우 예외처리
+     * 만약, 사용자가 등록한 공지사항이 있는 경우는 회원삭제가 되지 않음
+     * */
+    @DeleteMapping("/api/user/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable long id) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(()-> new UserNotFoundException("사용자 정보가 없습니다."));
+
+        // 내가 쓴 공지사항이 있는 경우
+        // -> ???
+        // 1. 삭제 못해... 삭제하려면, 공지사항 삭제하고와..
+        // 2. 회원삭제전에 공지사항글을 다 삭제하는 경우...
+        // 3.
+
+        try {
+            userRepository.delete(user);
+        } catch (DataIntegrityViolationException e) {
+            String message = "제약조건에 문제가 발생하였습니다.";
+            return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            String message = "회원 탈퇴 중 문제가 발생하였습니다.";
+            return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+        }
 
         return ResponseEntity.ok().build();
     }
