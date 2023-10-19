@@ -4,6 +4,7 @@ import com.example.jpa.notice.entity.Notice;
 import com.example.jpa.notice.model.ResponseError;
 import com.example.jpa.notice.repository.NoticeRepository;
 import com.example.jpa.user.entity.User;
+import com.example.jpa.user.exception.ExistsEmailException;
 import com.example.jpa.user.exception.UserNotFoundException;
 import com.example.jpa.user.model.UserInput;
 import com.example.jpa.user.model.UserResponse;
@@ -11,6 +12,8 @@ import com.example.jpa.user.model.UserUpdate;
 import com.example.jpa.notice.model.NoticeResponse;
 import com.example.jpa.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.ErrorState;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,7 +56,7 @@ public class ApiUserController {
 
     /* 32. 사용자 정보르 입력받아서 저장하는 API 를 작성해 보세요.
     입력값: 이메일(유일한 값 확인), 이름, 비밀번호, 연락처, 가입일(현재일시)*/
-    @PostMapping("/api/user")
+/*    @PostMapping("/api/user")
     public ResponseEntity<?> addUser(@RequestBody @Valid UserInput userInput, Errors errors) {
 
         List<ResponseError> responseErrorList = new ArrayList<>();
@@ -73,7 +76,7 @@ public class ApiUserController {
                 .build();
         userRepository.save(user);
         return ResponseEntity.ok().build();
-    }
+    }*/
 
 
     /**
@@ -147,5 +150,40 @@ public class ApiUserController {
         return noticeResponsesList;
     }
 
+    /**
+     * 36. 사용자 등록시 이미 존재하는 이메일(이메일은 유일)인 경우 예외를 발생시키는 API를 작성
+     * 동일한 이메일에 가입된 회원정보가 존재하는 경우 ExistsEmailException 발생
+     * */
+    @PostMapping("/api/user")
+    public ResponseEntity<?> addUser(@RequestBody UserInput userInput, Errors errors) {
+
+        List<ResponseError> responseErrorList = new ArrayList<>();
+        if (errors.hasErrors()) {
+            errors.getAllErrors().stream().forEach((e)-> {
+                responseErrorList.add(ResponseError.of((FieldError)e ));
+            });
+            return new ResponseEntity<>(responseErrorList, HttpStatus.BAD_REQUEST);
+        }
+
+        if (userRepository.countByEmail(userInput.getEmail()) >0) {
+            throw new ExistsEmailException("이미 가입된 이메일 입니다");
+        }
+
+        User user = User.builder()
+                .email(userInput.getEmail())
+                .userName(userInput.getUserName())
+                .phone(userInput.getPhone())
+                .password(userInput.getPassword())
+                .regDate(LocalDateTime.now())
+                .build();
+        userRepository.save(user);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @ExceptionHandler(ExistsEmailException.class)
+    public ResponseEntity<?> ExistsEmailExceptionHandler(ExistsEmailException exception) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 }
 
