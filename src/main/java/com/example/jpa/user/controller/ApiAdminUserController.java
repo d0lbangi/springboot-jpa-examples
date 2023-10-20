@@ -17,6 +17,7 @@ import com.example.jpa.user.exception.UserNotFoundException;
 import com.example.jpa.user.model.*;
 import com.example.jpa.user.repository.UserLoginHistoryRepository;
 import com.example.jpa.user.repository.UserRepository;
+import com.example.jpa.user.service.UserService;
 import com.example.jpa.util.JWTUtils;
 import com.example.jpa.util.PasswordUtils;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,8 @@ public class ApiAdminUserController {
     private final UserRepository userRepository;
     private final NoticeRepository noticeRepository;
     private final UserLoginHistoryRepository userLoginHistoryRepository;
+
+    private final UserService userService;
 
     /**
      * 48. 사용자 목록과 사용자 수를 함께 내리는 REST API 작성
@@ -205,6 +208,21 @@ public class ApiAdminUserController {
         userRepository.save(user);
 
         return ResponseEntity.ok().body(ResponseMessage.success());
+    }
+
+    /**
+     * 56. 회원 전체수와 상태별 회원수에 대한 정보를 리턴하는 API 구현
+     * - 서비스 클래스를 이용해서 작성해 보세요.
+     **/
+    @GetMapping("/api/admin/user/status/count")
+    public ResponseEntity<?> userStatusCount() {
+
+    //  userRepository.countByStatus(Status.Using)
+    //  userRepository.countByStatus(Status.Stop)
+    //  total
+
+       UserSummary userSummary = userService.getUserStatusCount();
+       return ResponseEntity.ok().body(ResponseMessage.success(userSummary));
     }
 }
 
