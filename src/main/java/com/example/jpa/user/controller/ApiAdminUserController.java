@@ -242,14 +242,26 @@ public class ApiAdminUserController {
     /**
      * 58.사용자별 게시글 수를 리턴하는 API 작성
      */
-    @GetMapping("/api/admin/user/notice/count")
+/*    @GetMapping("/api/admin/user/notice/count")
     public ResponseEntity<?> userNoticeCount() {
 
         List<UserNoticeCount> userNoticeCountList = userService.getUserNoticeCount();
 
         return ResponseEntity.ok().body(ResponseMessage.success(userNoticeCountList));
 
+    }*/
+
+    /**
+     * 59. 사용자별 게시글 수와 좋아요 수를 리턴하는 API 작성
+     * */
+
+    @GetMapping("/api/admin/user/log")
+    public ResponseEntity<?> userLogCount() {
+
+        List<UserLogCount> userLogCounts = userService.getUserLogCount();
+        return ResponseEntity.ok().body(ResponseMessage.success(userLogCounts));
     }
+
 }
 
 

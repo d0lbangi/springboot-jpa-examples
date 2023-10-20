@@ -1,6 +1,7 @@
 package com.example.jpa.user.repository;
 
 import com.example.jpa.user.entity.User;
+import com.example.jpa.user.model.UserLogCount;
 import com.example.jpa.user.model.UserNoticeCount;
 import com.example.jpa.user.model.UserStatus;
 import lombok.RequiredArgsConstructor;
@@ -26,9 +27,17 @@ public class UserCustomRepository {
         List<UserNoticeCount> List = entityManager.createNativeQuery(sql).getResultList();
         return List;
     }
+
+    public List<UserLogCount> findUserLogCOunt() {
+
+        String sql = " select u.id, u.email, u.user_name " +
+                ", (select count(*) from notice n where n.user_id = u.id) notice_count " +
+                ", (select count(*) from notice_like nl where nl.user_id = u.id) notice_like_count " +
+                " from user u";
+        List<UserLogCount> List = entityManager.createNativeQuery(sql).getResultList();
+        return List;
+    }
 }
-
-
 
 
 
