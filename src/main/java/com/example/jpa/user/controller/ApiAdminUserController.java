@@ -184,6 +184,28 @@ public class ApiAdminUserController {
 
         return ResponseEntity.ok().body(ResponseMessage.success());
     }
+
+    /**
+     * 55. 사용자의 접속을 해제하는 API 구현
+     * */
+    @PatchMapping("/api/admin/user/{id}/unlock")
+    public ResponseEntity<?> userUnLock(@PathVariable Long id) {
+
+        Optional<User> optionalUser = userRepository.findById(id);
+        if(!optionalUser.isPresent()) {
+            return new ResponseEntity<>(ResponseMessage.fail("사용자 정보가 없습니다."), HttpStatus.BAD_REQUEST);
+        }
+
+        User user = optionalUser.get();
+        if (!user.isLockYn()) {
+            return new ResponseEntity<>(ResponseMessage.fail("이미 접속 제한이 해제된 사용자 입니다."), HttpStatus.BAD_REQUEST);
+        }
+
+        user.setLockYn(false);
+        userRepository.save(user);
+
+        return ResponseEntity.ok().body(ResponseMessage.success());
+    }
 }
 
 
