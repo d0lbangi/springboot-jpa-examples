@@ -10,10 +10,12 @@ import com.example.jpa.notice.model.ResponseError;
 import com.example.jpa.notice.repository.NoticeLikeRepository;
 import com.example.jpa.notice.repository.NoticeRepository;
 import com.example.jpa.user.entity.User;
+import com.example.jpa.user.entity.UserLoginHistory;
 import com.example.jpa.user.exception.ExistsEmailException;
 import com.example.jpa.user.exception.PasswordNotMatchException;
 import com.example.jpa.user.exception.UserNotFoundException;
 import com.example.jpa.user.model.*;
+import com.example.jpa.user.repository.UserLoginHistoryRepository;
 import com.example.jpa.user.repository.UserRepository;
 import com.example.jpa.util.JWTUtils;
 import com.example.jpa.util.PasswordUtils;
@@ -39,6 +41,7 @@ public class ApiAdminUserController {
 
     private final UserRepository userRepository;
     private final NoticeRepository noticeRepository;
+    private final UserLoginHistoryRepository userLoginHistoryRepository;
 
     /**
      * 48. 사용자 목록과 사용자 수를 함께 내리는 REST API 작성
@@ -146,6 +149,18 @@ public class ApiAdminUserController {
         userRepository.delete(user);
 
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 53. 사용자가 로그인을 했을 때 이에 대한 접속 이력이 저장된다고 했을 때, 이에 대한 접속 이력을 조회하는 API
+     * - 접속이력 정보가 있다는 가정하에 API 작성
+     * - UserLoginHistory 엔티티를 통해서 구현
+     * */
+    @GetMapping("/api/admin/user/login/history")
+    public ResponseEntity<?> userLoginHistory(){
+
+        List<UserLoginHistory> userLoginHistories = userLoginHistoryRepository.findAll();
+        return ResponseEntity.ok().body(userLoginHistories);
     }
 }
 
