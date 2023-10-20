@@ -31,10 +31,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -51,7 +48,7 @@ public class ApiAdminUserController {
      * }
      *
      * */
-    @GetMapping("/api/admin/user")
+    /*@GetMapping("/api/admin/user")
     public ResponseMessage userList() {
 
         List<User> userList = userRepository.findAll();
@@ -62,6 +59,31 @@ public class ApiAdminUserController {
                 .data(userList)
                 .build();
 
+    }*/
+
+
+    /**
+     * 49. 사용자 상세 조회를 조회하는 API 를 아래 조건에 맞게 구현
+     * ResponseMessage 클래스로 추상화해서 전송
+     * {
+     *     "header": {
+     *         result: true|false
+     *         , resultCode: string
+     *         , message: error message or alert message
+     *         , status: http result code
+     *     },
+     *     "body" : 내려야 할 데이터가 있는 경우 body 를 통해서 전송
+     * }
+     * */
+
+    @GetMapping("/api/admin/user/{id}")
+    public ResponseEntity<?> userDetail(@PathVariable Long id) {
+
+        Optional<User> user = userRepository.findById(id);
+        if (!user.isPresent()) {
+            return new ResponseEntity<>(ResponseMessage.fail("사용자 정보가 존재하지 않습니다"), HttpStatus.BAD_REQUEST);
+        }
+            return ResponseEntity.ok().body(ResponseMessage.success(user));
     }
 }
 
