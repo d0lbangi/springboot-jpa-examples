@@ -34,5 +34,7 @@ public class User {
     private LocalDateTime updateDate;
     @Column
     private UserStatus status;
+    @Column
+    private boolean lockYn;
 }
 
