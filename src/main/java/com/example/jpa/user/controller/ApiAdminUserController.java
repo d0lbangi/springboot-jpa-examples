@@ -85,5 +85,37 @@ public class ApiAdminUserController {
         }
             return ResponseEntity.ok().body(ResponseMessage.success(user));
     }
+
+    /**
+     * 50. 사용자 목록 조회에 대한 검색을 리턴하는 API 작성
+     * - 이메일, 이름, 전화번호에 대한 검색결과를 리턴(각 항목은 or 조건)
+     * */
+
+    @GetMapping("/api/admin/user/search")
+    public ResponseEntity<?> findUser(@RequestBody UserSearch userSearch) {
+
+        List<User> userList =
+                userRepository.findByEmailContainsOrPhoneContainsOrUserNameContains(userSearch.getEmail()
+                , userSearch.getPhone()
+                , userSearch.getUserName());
+
+        return ResponseEntity.ok().body(ResponseMessage.success(userList));
+
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

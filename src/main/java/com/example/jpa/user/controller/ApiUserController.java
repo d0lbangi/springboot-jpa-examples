@@ -429,7 +429,7 @@ public class ApiUserController {
     /**
      * 45. JWT 토큰 발행 시 발행 유효기간을 1개월로 저장하는 API 작성
     */
-    @PostMapping("/api/user/login")
+    /*@PostMapping("/api/user/login")
     public ResponseEntity<?> createToken(@RequestBody @Valid UserLogin userLogin, Errors errors) {
 
         List<ResponseError> responseErrorList = new ArrayList<>();
@@ -459,7 +459,7 @@ public class ApiUserController {
                 .sign(Algorithm.HMAC512("fastcampus".getBytes()));
 
         return ResponseEntity.ok().body(UserLoginToken.builder().token(token).build());
-    }
+    }*/
 
 
     /**
@@ -467,7 +467,7 @@ public class ApiUserController {
      *  - 이미 발행된 JWT 토큰을 통해서 토큰을 재발행하는 로직을 구현
      *  - 정상적인 회원에 대해서 재발행 진행
      * */
-    @PatchMapping("/api/user/login")
+    /*@PatchMapping("/api/user/login")
     public ResponseEntity<?> refreshToken(HttpServletRequest request){
 
         String token = request.getHeader("F-TOKEN");
@@ -495,7 +495,7 @@ public class ApiUserController {
                 .sign(Algorithm.HMAC512("fastcampus".getBytes()));
 
         return ResponseEntity.ok().body(UserLoginToken.builder().token(newToken).build());
-    }
+    }*/
 
 
     /**
