@@ -17,7 +17,7 @@ import java.util.stream.DoubleStream;
 public class ResponseMessage {
 
     private ResponseMessageHeader header;
-    private Object data;
+    private Object body;
 
     public static ResponseMessage fail(String message) {
 
@@ -28,7 +28,7 @@ public class ResponseMessage {
                         .message(message)
                         .status(HttpStatus.BAD_REQUEST.value())
                         .build())
-                    .data(null)
+                    .body(null)
                     .build();
     }
 
@@ -41,7 +41,7 @@ public class ResponseMessage {
                         .message("")
                         .status(HttpStatus.OK.value())
                         .build())
-                .data(data)
+                .body(data)
                 .build();
     }
 
@@ -54,7 +54,7 @@ public class ResponseMessage {
                         .message("")
                         .status(HttpStatus.OK.value())
                         .build())
-                .data(null)
+                .body(null)
                 .build();
     }
 }

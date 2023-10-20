@@ -1,7 +1,7 @@
 INSERT INTO USER (ID, EMAIL, PASSWORD, PHONE, REG_DATE, UPDATE_DATE, USER_NAME, STATUS, LOCK_YN)
 VALUES (1, 'test@naver.com', '$2a$10$tinOeKIqbIoFUB3FPvYhp.3hiuZtLPjPgL2CJ4/KFgQot.6Iz/lDS', '010-1111-2222', '2021-02-01 00:49:43.000000', null, '박규태', 1, 0)
-     , (2, 'test1@naver.com', '2222', '010-3333-2222', '2021-02-01 00:50:43.000000', null, '정혜경', 1, 0)
-     , (3, 'test2@naver.com', '3333', '010-5555-2222', '2021-02-01 01:49:43.000000', null, '박하은', 1, 0)
+     , (2, 'test1@naver.com', '2222', '010-3333-2222', '2023-10-20 00:50:43.000000', null, '정혜경', 1, 0)
+     , (3, 'test2@naver.com', '3333', '010-5555-2222', '2023-10-20 01:49:43.000000', null, '박하은', 1, 0)
      , (4, 'test3@naver.com', '4444', '010-7777-2222', '2021-02-01 02:57:43.000000', null, '박하영', 2, 0);
 
 INSERT INTO NOTICE (ID, CONTENTS, DELETED_DATE, DELETED, HITS, LIKES, REG_DATE, TITLE, UPDATE_DATE, USER_ID)
