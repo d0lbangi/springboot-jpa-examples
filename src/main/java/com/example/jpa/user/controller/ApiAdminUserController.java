@@ -240,9 +240,8 @@ public class ApiAdminUserController {
 
 
     /**
-     * 58. 사용자별 공지사항의 게시글 수 리턴하는 API 작성
-     *
-     * */
+     * 58.사용자별 게시글 수를 리턴하는 API 작성
+     */
     @GetMapping("/api/admin/user/notice/count")
     public ResponseEntity<?> userNoticeCount() {
 
