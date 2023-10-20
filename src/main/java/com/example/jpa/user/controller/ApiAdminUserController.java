@@ -100,7 +100,29 @@ public class ApiAdminUserController {
                 , userSearch.getUserName());
 
         return ResponseEntity.ok().body(ResponseMessage.success(userList));
+    }
 
+    /**
+     * 51. 사용자의 상태를 변경하는 API 작성
+     * - 사용자 상태: (정상, 정지)
+     * 0 이에 대한 플래그값은 사용자상태(정상: Using, 정지: Stop)
+     * */
+    @PatchMapping("/api/admin/user/{id}/status")
+    public ResponseEntity<?> userStatus(@PathVariable Long id, @RequestBody UserStatusInput userStatusInput) {
+
+        Optional<User> optionalUser = userRepository.findById(id);
+
+        if(!optionalUser.isPresent()) {
+            return new ResponseEntity<>(ResponseMessage.fail("사용자 정보가 없습니다."), HttpStatus.BAD_REQUEST);
+        }
+
+
+        User user = optionalUser.get();
+
+        user.setStatus(userStatusInput.getStatus());
+        userRepository.save(user);
+
+        return ResponseEntity.ok().build();
     }
 }
 
