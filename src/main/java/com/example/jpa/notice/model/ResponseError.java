@@ -9,6 +9,8 @@ import org.springframework.validation.ObjectError;
 
 import javax.validation.constraints.NotNull;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NotNull
@@ -24,5 +26,17 @@ public class ResponseError {
                 .field(e.getField())
                 .message(e.getDefaultMessage())
                 .build();
+    }
+
+    public static List<ResponseError> of(List<ObjectError> errors) {
+
+        List<ResponseError> responseErrors = new ArrayList<>();
+        if (errors != null) {
+            errors.stream().forEach((e) -> {
+                responseErrors.add(ResponseError.of((FieldError)e));
+            });
+        }
+
+        return responseErrors;
     }
 }

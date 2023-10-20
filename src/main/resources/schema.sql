@@ -47,3 +47,11 @@ create table USER_LOGIN_HISTORY
     LOGIN_DATE  TIMESTAMP,
     IP_ADDR     VARCHAR(255)
 );
+
+create table BOARD_TYPE
+(
+    ID          BIGINT auto_increment primary key,
+    BOARD_NAME  VARCHAR(255),
+    REG_DATE    TIMESTAMP
+);
+
