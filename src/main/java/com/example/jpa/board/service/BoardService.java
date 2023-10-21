@@ -1,5 +1,6 @@
 package com.example.jpa.board.service;
 
+import com.example.jpa.board.entity.Board;
 import com.example.jpa.board.entity.BoardBadReport;
 import com.example.jpa.board.entity.BoardType;
 import com.example.jpa.board.model.*;
@@ -80,4 +81,8 @@ public interface BoardService {
      * 북마크 삭제
      * */
     ServiceResult removeBookmark(Long id, String email);
+    /**
+     * 내가 작성한 게시글
+     * */
+    List<Board> PostList(String email);
 }

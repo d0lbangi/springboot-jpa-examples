@@ -3,6 +3,9 @@ package com.example.jpa.user.controller;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
+import com.example.jpa.board.entity.Board;
+import com.example.jpa.board.service.BoardService;
+import com.example.jpa.common.model.ResponseResult;
 import com.example.jpa.notice.entity.Notice;
 import com.example.jpa.notice.entity.NoticeLike;
 import com.example.jpa.notice.model.NoticeResponse;
@@ -42,7 +45,7 @@ public class ApiUserController {
     private final UserRepository userRepository;
     private final NoticeRepository noticeRepository;
     private final NoticeLikeRepository noticeLikeRepository;
-
+    private final BoardService boardService;
 
     /**
      31. 사용자 등록시 입력값이 유효하지 않은 경우 예외를 발생시키는 기능을 작성해 보세요.
@@ -521,6 +524,24 @@ public class ApiUserController {
     }
 
 
+
+    /**
+     * 80. 내가 작성한 게시글 목록을 리턴하는 API 작성
+     **/
+    @GetMapping("/api/user/board/post")
+    public ResponseEntity<?> myPost(@RequestHeader("F-TOKEN") String token) {
+
+        String email = "";
+
+        try {
+            email = JWTUtils.getIssuer(token);
+        } catch (SignatureVerificationException e) {
+            return ResponseResult.fail("토근 정보가 정확하지 않습니다.");
+        }
+
+        List<Board> list = boardService.PostList(email);
+        return ResponseResult.success(list);
+    }
 }
 
 

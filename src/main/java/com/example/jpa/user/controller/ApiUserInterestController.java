@@ -75,6 +75,8 @@ public class ApiUserInterestController {
         ServiceResult result = userService.removeInterestUser(email, id); // 내 아이디, 추가할 ID
         return ResponseResult.result(result);
     }
+
+
 }
 
 
