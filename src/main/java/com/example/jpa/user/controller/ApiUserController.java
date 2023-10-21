@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.example.jpa.board.entity.Board;
 import com.example.jpa.board.entity.BoardComment;
+import com.example.jpa.board.model.ServiceResult;
 import com.example.jpa.board.service.BoardService;
 import com.example.jpa.common.model.ResponseResult;
 import com.example.jpa.notice.entity.Notice;
@@ -19,6 +20,7 @@ import com.example.jpa.user.exception.PasswordNotMatchException;
 import com.example.jpa.user.exception.UserNotFoundExcetpion;
 import com.example.jpa.user.model.*;
 import com.example.jpa.user.repository.UserRepository;
+import com.example.jpa.user.service.PointService;
 import com.example.jpa.util.JWTUtils;
 import com.example.jpa.util.PasswordUtils;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +49,7 @@ public class ApiUserController {
     private final NoticeRepository noticeRepository;
     private final NoticeLikeRepository noticeLikeRepository;
     private final BoardService boardService;
+    private final PointService pointService;
 
     /**
      31. 사용자 등록시 입력값이 유효하지 않은 경우 예외를 발생시키는 기능을 작성해 보세요.
@@ -560,8 +563,26 @@ public class ApiUserController {
 
         List<BoardComment> list = boardService.commentList(email);
         return ResponseResult.success(list);
+    }
 
 
+    /**
+     * 82. 사용자의 포인트 정보를 만들고 게시글을 작성할 경우, 포인트를 누락하는 API 작성
+     * */
+    @PostMapping("/api/user/point")
+    public ResponseEntity<?> userPoint(@RequestHeader("F-TOKEN") String token
+    , @RequestBody UserPointInput userPointInput) {
+
+        String email = "";
+
+        try {
+            email = JWTUtils.getIssuer(token);
+        } catch (SignatureVerificationException e) {
+            return ResponseResult.fail("토근 정보가 정확하지 않습니다.");
+        }
+
+        ServiceResult result  = pointService.addPoint(email, userPointInput);
+        return ResponseResult.result(result);
     }
 
 }

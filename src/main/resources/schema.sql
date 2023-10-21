@@ -185,3 +185,11 @@ create table BOARD_COMMENT
     constraint FK_BOARD_COMMENT_BOARD_ID foreign key (BOARD_ID) references BOARD (ID)
 );
 
+create table USER_POINT
+(
+    ID               BIGINT auto_increment primary key,
+    POINT            INTEGER,
+    USER_POINT_TYPE  VARCHAR(255),
+    USER_ID          BIGINT,
+    constraint       FK_USER_POINT_USER_ID foreign key (USER_ID) references USER (ID)
+);
