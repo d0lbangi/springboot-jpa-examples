@@ -40,8 +40,27 @@ public class ApiBoardScrapController {
             return ResponseResult.fail("토큰 정보가 정확하지 않습니다.");
         }
 
-        return ResponseResult.result(boardService.scrapBoard(id, email));
+        return ResponseResult.result(boardService.scrap(id, email));
     }
+
+
+    /**
+     * 76. 게시물의 스크립을 삭제하는 기능의 API 작성
+     * */
+    @DeleteMapping("/api/scrap/{id}")
+    public ResponseEntity<?> deleteBoardScrap(@PathVariable Long id
+    , @RequestHeader("F-TOKEN") String token) {
+
+        String email = "";
+        try {
+            email = JWTUtils.getIssuer(token);
+        } catch (JWTVerificationException e) {
+            return ResponseResult.fail("토큰 정보가 없습니다.");
+        }
+
+        return ResponseResult.result(boardService.removeScrap(id, email));
+    }
+
 }
 
 

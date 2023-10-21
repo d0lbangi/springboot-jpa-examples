@@ -64,5 +64,10 @@ public interface BoardService {
     /**
      * 게시물 스크랩 함
      * */
-    ServiceResult scrapBoard(Long id, String email);
+    ServiceResult scrap(Long id, String email);
+
+    /**
+     * 게시물 스크랩 삭제 함
+     * */
+    ServiceResult removeScrap(Long id, String email);
 }
