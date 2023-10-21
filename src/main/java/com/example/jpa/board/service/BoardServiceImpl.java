@@ -3,15 +3,13 @@ package com.example.jpa.board.service;
 import com.example.jpa.board.entity.*;
 import com.example.jpa.board.model.*;
 import com.example.jpa.board.repository.*;
+import com.example.jpa.common.model.ResponseResult;
 import com.example.jpa.user.entity.User;
 import com.example.jpa.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +25,7 @@ public class BoardServiceImpl implements BoardService{
     private final UserRepository userRepository;
     private final BoardLikeRepository boardLikeRepository;
     private final BoardBadReportRepository boardBadReportRepository;
+    private final BoardScrapRepository boardScrapRepository;
 
     @Override
     public ServiceResult addBoard(BoardTypeInput boardTypeInput) {
@@ -270,5 +269,36 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public List<BoardBadReport> badReportList() {
         return boardBadReportRepository.findAll();
+    }
+
+    @Override
+    public ServiceResult scrapBoard(Long id, String email) {
+
+        Optional<Board> optionalBoard = boardRepository.findById(id);
+        if(!optionalBoard.isPresent()) {
+            return ServiceResult.fail("이미 게시글이 존재하지 않습니다.");
+        }
+        Board board = optionalBoard.get();
+
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        if(!optionalUser.isPresent()) {
+            return ServiceResult.fail("이미 조회수가 있습니다.");
+        }
+        User user = optionalUser.get();
+
+        BoardScrap boardScrap = BoardScrap.builder()
+                .user(user)
+                .boardId(board.getId())
+                .boardTypeId(board.getBoardType().getId())
+                .boardUserId(board.getUser().getId())
+                .boardTitle(board.getTitle())
+                .boardContents(board.getContents())
+                .boardRegDate(board.getRegDate())
+                .boardRegDate(LocalDateTime.now())
+                .build();
+        boardScrapRepository.save(boardScrap);
+        return ServiceResult.success();
+
+
     }
 }
