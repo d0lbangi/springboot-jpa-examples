@@ -407,7 +407,7 @@ public class BoardServiceImpl implements BoardService{
         }
         User user = optionalUser.get();
 
-        List<BoardComment> list = BoardCommentRepository.findByUser(user);
+        List<BoardComment> list = boardCommentRepository.findByUser(user);
         return list;
     }
 }
