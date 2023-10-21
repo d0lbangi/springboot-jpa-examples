@@ -221,6 +221,25 @@ public class ApiBoardController {
         ServiceResult result = boardService.setBoardUnLike(id, email);
         return ResponseResult.result(result);
     }
+
+    /**
+     * 73. 게시된 게시글에 대해서 문제가 있는 게시글을 신고하는 기능의 API 작성
+     * */
+    @PutMapping("/api/board/{id}/badreport")
+    public ResponseEntity<?> boardBadReport(@PathVariable Long id
+    , @RequestHeader("F-TOKEN") String token
+    , @RequestBody BoardBadReportInput boardBadReportInput) {
+
+        String email = "";
+
+        try {
+            email = JWTUtils.getIssuer(token);
+        } catch (JWTVerificationException e) {
+            return ResponseResult.fail("토큰 정보가 없습니다.");
+        }
+        ServiceResult result = boardService.addBadReport(id, email, boardBadReportInput);
+        return ResponseResult.result(result);
+    }
 }
 
 
