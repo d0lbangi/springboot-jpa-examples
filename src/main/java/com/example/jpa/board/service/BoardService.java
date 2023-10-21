@@ -70,4 +70,14 @@ public interface BoardService {
      * 게시물 스크랩 삭제 함
      * */
     ServiceResult removeScrap(Long id, String email);
+
+    /**
+     * 북마크 추가
+     * */
+    ServiceResult addBookmark(Long id, String email);
+
+    /**
+     * 북마크 삭제
+     * */
+    ServiceResult removeBookmark(Long id, String email);
 }
