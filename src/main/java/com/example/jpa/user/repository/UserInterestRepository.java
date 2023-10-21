@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 public interface UserInterestRepository extends JpaRepository<UserInterest, Long> {
 
     long countByUserAndInterestUser(User user, User interestUser);
+
 }
 
 
