@@ -1,5 +1,6 @@
 package com.example.jpa.board.controller;
 
+import com.example.jpa.board.entity.BoardType;
 import com.example.jpa.board.model.BoardTypeInput;
 import com.example.jpa.board.model.ServiceResult;
 import com.example.jpa.board.service.BoardService;
@@ -62,6 +63,32 @@ public class ApiBoardController {
            return ResponseEntity.ok().body(ResponseMessage.fail(result.getMessage()));
        }
        return ResponseEntity.ok().build();
+   }
+
+   /**
+    * 63. 게시판 타입 삭제하는 API 작성
+    * - 삭제하는 게시글이 있는 경우 삭제 안됨
+    * */
+   @DeleteMapping("/api/board/type/{id}")
+   public ResponseEntity<?> deleteBoardType(@PathVariable Long id) {
+
+       ServiceResult result = boardService.deleteBoard(id);
+
+       if (!result.isResult()) {
+           return ResponseEntity.ok().body(ResponseMessage.fail(result.getMessage()));
+       }
+       return ResponseEntity.ok().build();
+   }
+
+   /**
+    * 64.게시판 타입의 목록을 리턴하는 API 작성
+    *
+    * */
+   @GetMapping("/api/board/type")
+   public ResponseEntity<?> boardType() {
+
+       List<BoardType> boardTypeList = boardService.getAllBoardType();
+       return ResponseEntity.ok().body(ResponseMessage.success(boardTypeList));
    }
 
 

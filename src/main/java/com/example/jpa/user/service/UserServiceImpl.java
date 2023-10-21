@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
-
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
@@ -49,15 +48,20 @@ public class UserServiceImpl implements UserService {
     public List<UserNoticeCount> getUserNoticeCount() {
 
         return userCustomRepository.findUserNoticeCount();
+
     }
 
     @Override
     public List<UserLogCount> getUserLogCount() {
-        return userCustomRepository.findUserLogCOunt();
+
+        return userCustomRepository.findUserLogCount();
     }
 
     @Override
-    public List<UserLogCount> getUserLikeBest() {
+    public List<UserLogCount> getUserLikeBest(){
+
         return userCustomRepository.findUserLikeBest();
     }
+
+
 }

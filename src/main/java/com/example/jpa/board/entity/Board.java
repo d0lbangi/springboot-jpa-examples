@@ -1,5 +1,4 @@
-package com.example.jpa.notice.entity;
-
+package com.example.jpa.board.entity;
 
 import com.example.jpa.user.entity.User;
 import lombok.AllArgsConstructor;
@@ -8,23 +7,33 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
-@Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Data
-public class NoticeLike {
+@Builder
+@Entity
+public class Board {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @JoinColumn
     @ManyToOne
-    private Notice notice;
-
     @JoinColumn
-    @ManyToOne
     private User user;
+
+    @ManyToOne
+    @JoinColumn
+    private BoardType boardType;
+
+    @Column
+    private String title;
+
+    @Column
+    private String contents;
+
+    @Column
+    private LocalDateTime regDate;
 }
