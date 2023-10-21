@@ -163,4 +163,13 @@ create table BOARD_BOOKMARK
 );
 
 
+create table USER_INTEREST
+(
+    ID               BIGINT auto_increment primary key,
+    USER_ID          BIGINT,
+    INTEREST_USER_ID BITINT,
+    REG_DATE         TIMESTAMP
 
+    constraint FK_USER_INTEREST_USER_ID foreign key (USER_ID) references USER (ID),
+    constraint FK_USER_INTEREST_INTEREST_USER_ID foreign key (INTEREST_USER_ID) references USER (ID)
+);
