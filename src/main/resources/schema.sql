@@ -105,5 +105,3 @@ create table BOARD_HITS
 
 
 
-
-

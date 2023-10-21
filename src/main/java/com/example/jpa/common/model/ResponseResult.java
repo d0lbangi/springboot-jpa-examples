@@ -7,7 +7,7 @@ public class ResponseResult {
         return ResponseEntity.badRequest().body(message);
     }
 
-    public static ResponseEntity<?> success(String message) {
+    public static ResponseEntity<?> success() {
         return ResponseEntity.ok().build();
     }
 }
