@@ -1,5 +1,6 @@
 package com.example.jpa.board.service;
 
+import com.example.jpa.board.entity.BoardBadReport;
 import com.example.jpa.board.entity.BoardType;
 import com.example.jpa.board.model.*;
 
@@ -54,4 +55,9 @@ public interface BoardService {
      * 게시글을 신고하는 기능
      * */
     ServiceResult addBadReport(Long id, String email, BoardBadReportInput boardBadReportInput);
+
+    /**
+     *  신고된 게시글 경고 목록
+     * */
+    List<BoardBadReport> badReportList();
 }
