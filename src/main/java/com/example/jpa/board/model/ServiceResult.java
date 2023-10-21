@@ -5,10 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ServiceResult {
 
     private boolean result;
@@ -22,7 +22,6 @@ public class ServiceResult {
     }
 
     public static ServiceResult success() {
-
         return ServiceResult.builder()
                 .result(true)
                 .build();
@@ -31,4 +30,5 @@ public class ServiceResult {
     public boolean isFail() {
         return !result;
     }
+
 }

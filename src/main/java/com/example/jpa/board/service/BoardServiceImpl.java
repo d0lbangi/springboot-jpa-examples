@@ -2,20 +2,15 @@ package com.example.jpa.board.service;
 
 import com.example.jpa.board.entity.Board;
 import com.example.jpa.board.entity.BoardHits;
+import com.example.jpa.board.entity.BoardLike;
 import com.example.jpa.board.entity.BoardType;
 import com.example.jpa.board.model.*;
-import com.example.jpa.board.repository.BoardHitsRepository;
-import com.example.jpa.board.repository.BoardRepository;
-import com.example.jpa.board.repository.BoardTypeCustomRepository;
-import com.example.jpa.board.repository.BoardTypeRepository;
-import com.example.jpa.common.model.ResponseResult;
+import com.example.jpa.board.repository.*;
 import com.example.jpa.user.entity.User;
 import com.example.jpa.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.OpenOption;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +24,7 @@ public class BoardServiceImpl implements BoardService{
     private final BoardTypeCustomRepository boardTypeCustomRepository;
     private final BoardHitsRepository boardHitsRepository;
     private final UserRepository userRepository;
+    private final BoardLikeRepository boardLikeRepository;
 
     @Override
     public ServiceResult addBoard(BoardTypeInput boardTypeInput) {
@@ -184,5 +180,32 @@ public class BoardServiceImpl implements BoardService{
         return ServiceResult.success();
 
 
+    }
+
+    @Override
+    public ServiceResult setBoardLike(Long id, String email) {
+
+        Optional<Board> optionalBoard = boardRepository.findById(id);
+        if(!optionalBoard.isPresent()) {
+            return ServiceResult.fail("이미 게시글이 존재하지 않습니다.");
+        }
+        Board board = optionalBoard.get();
+
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        if(!optionalUser.isPresent()) {
+            return ServiceResult.fail("이미 조회수가 있습니다.");
+        }
+        User user = optionalUser.get();
+
+        long boardLIkeCount = boardLikeRepository.countByBoardAndUser(board, user);
+        if (boardLIkeCount > 0) {
+            return ServiceResult.fail("이미 좋아요한 내용이 있습니다.");
+        }
+
+        boardLikeRepository.save(BoardLike.builder()
+                        .board(board)
+                        .user(user)
+                        .regDate(LocalDateTime.now()).build());
+        return ServiceResult.success();
     }
 }
