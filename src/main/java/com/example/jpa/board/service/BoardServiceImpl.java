@@ -2,10 +2,7 @@ package com.example.jpa.board.service;
 
 import com.example.jpa.board.entity.Board;
 import com.example.jpa.board.entity.BoardType;
-import com.example.jpa.board.model.BoardTypeCount;
-import com.example.jpa.board.model.BoardTypeInput;
-import com.example.jpa.board.model.BoardTypeUsing;
-import com.example.jpa.board.model.ServiceResult;
+import com.example.jpa.board.model.*;
 import com.example.jpa.board.repository.BoardRepository;
 import com.example.jpa.board.repository.BoardTypeCustomRepository;
 import com.example.jpa.board.repository.BoardTypeRepository;
@@ -125,6 +122,24 @@ public class BoardServiceImpl implements BoardService{
         }
 
         board.setTopYn(topYn);
+        boardRepository.save(board);
+
+        return ServiceResult.success();
+
+    }
+
+    @Override
+    public ServiceResult setBoardPeriod(Long id, BoardPeriod boardPeriod) {
+
+        Optional<Board> optionalBoard = boardRepository.findById(id);
+        if(!optionalBoard.isPresent()) {
+            return ServiceResult.fail("이미 게시글이 존재하지 않습니다.");
+        }
+
+        Board board = optionalBoard.get();
+
+        board.setPublishStartDate(boardPeriod.getStartDate());
+        board.setPublishEndDate(boardPeriod.getEndDate());
         boardRepository.save(board);
 
         return ServiceResult.success();

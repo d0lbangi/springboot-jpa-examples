@@ -1,11 +1,9 @@
 package com.example.jpa.board.controller;
 
 import com.example.jpa.board.entity.BoardType;
-import com.example.jpa.board.model.BoardTypeCount;
-import com.example.jpa.board.model.BoardTypeInput;
-import com.example.jpa.board.model.BoardTypeUsing;
-import com.example.jpa.board.model.ServiceResult;
+import com.example.jpa.board.model.*;
 import com.example.jpa.board.service.BoardService;
+import com.example.jpa.common.model.ResponseResult;
 import com.example.jpa.notice.model.ResponseError;
 import com.example.jpa.user.model.*;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +13,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Provider;
 import java.util.*;
 
 @RequiredArgsConstructor
@@ -135,7 +134,20 @@ public class ApiBoardController {
 
         ServiceResult result = boardService.setBoardTop(id, false);
         return ResponseEntity.ok().body(result);
+    }
 
+    /**
+     * 69. 게시글의 게시기간을 시작일과 종료일로 설정하는 API 작성
+     * */
+    @PatchMapping("/api/board/{id}/public")
+    public ResponseEntity<?> boardPeriod(@PathVariable Long id, @RequestBody BoardPeriod boardPeriod) {
+
+        ServiceResult result = boardService.setBoardPeriod(id, boardPeriod);
+
+        if (!result.isResult()) {
+            return ResponseResult.fail(result.getMessage());
+        }
+        return ResponseResult.success(result.getMessage());
     }
 }
 
