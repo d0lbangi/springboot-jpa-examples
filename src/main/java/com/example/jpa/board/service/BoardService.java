@@ -26,4 +26,10 @@ public interface BoardService {
      * 게시판 타입의 게시글 수 리턴
      * */
     List<BoardTypeCount> getBoardTypeCount();
+
+
+    /**
+     * 게시굴을 최상단에 배치함
+     * */
+    ServiceResult setBoardTop(Long id);
 }

@@ -1,9 +1,9 @@
 
-DROP TABLE IF EXISTS USERS;
+DROP TABLE IF EXISTS USER;
 DROP TABLE IF EXISTS NOTICE;
 
 -- auto-generated definition
-create table USERS
+create table USER
 (
     ID          BIGINT auto_increment primary key,
     EMAIL       VARCHAR(255),
@@ -33,7 +33,7 @@ create table NOTICE
     DELETED        BOOLEAN,
 
     USER_ID         BIGINT,
-    constraint FK_NOTICE_USER_ID foreign key(USER_ID) references USERS(ID)
+    constraint FK_NOTICE_USER_ID foreign key(USER_ID) references USER(ID)
 );
 
 -- auto-generated definition
@@ -43,7 +43,7 @@ create table NOTICE_LIKE
     NOTICE_ID   BIGINT,
     USER_ID     BIGINT not null,
     constraint  FK_NOTICE_LIKE_NOTICE_ID foreign key (NOTICE_ID) references NOTICE (ID),
-    constraint  FK_NOTICE_LIKE_USER_ID foreign key (USER_ID) references USERS (ID)
+    constraint  FK_NOTICE_LIKE_USER_ID foreign key (USER_ID) references USER (ID)
 );
 
 
@@ -78,8 +78,32 @@ create table BOARD
     BOARD_TYPE_ID BIGINT,
     USER_ID       BIGINT,
 
+    TOP_YN        BOOLEAN,
+
+    PUBLISH_START_DATE  DATE,
+    PUBLISH_END_DATE    DATE,
+
     constraint FK_BOARD_BOARD_TYPE_ID foreign key (BOARD_TYPE_ID) references BOARD_TYPE (ID),
-    constraint FK_BOARD_USER_ID foreign key (USERS_ID) references USERS (ID)
+    constraint FK_BOARD_USER_ID foreign key (USER_ID) references USER (ID)
 );
+
+
+-- auto-generated definition
+create table BOARD_HITS
+(
+    ID          BIGINT auto_increment primary key,
+    REG_DATE    TIMESTAMP,
+    BOARD_ID    BIGINT,
+    USER_ID     BIGINT,
+    constraint FK_BOARD_HITS_BOARD_ID foreign key (BOARD_ID) references BOARD (ID),
+    constraint FK_BOARD_HITS_USER_ID foreign key (USER_ID) references USER (ID)
+);
+
+
+
+
+
+
+
 
 

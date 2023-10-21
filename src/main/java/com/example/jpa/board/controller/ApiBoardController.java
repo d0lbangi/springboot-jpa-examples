@@ -112,10 +112,19 @@ public class ApiBoardController {
     * - 현재 사용가능한 게시판에 대해서 게시글의 개수 리턴
     * */
    @GetMapping("/api/board/type/count")
-   public ResponseEntity<?>  boardTypeCount() {
+   public ResponseEntity<?> boardTypeCount() {
 
        List<BoardTypeCount> list = boardService.getBoardTypeCount();
        return ResponseEntity.ok().body(list);
+   }
+
+   /**
+    * 67. 게시된 게시글을 최상단에 배치하는 API 작성
+    * */
+   @PatchMapping("/api/board/{id}/top")
+   public ResponseEntity<?> boardTop(@PathVariable Long id) {
+        ServiceResult result = boardService.setBoardTop(id);
+        return ResponseEntity.ok().body(result);
    }
 }
 
