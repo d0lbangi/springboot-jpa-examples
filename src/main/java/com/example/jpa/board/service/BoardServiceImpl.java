@@ -208,4 +208,29 @@ public class BoardServiceImpl implements BoardService{
                         .regDate(LocalDateTime.now()).build());
         return ServiceResult.success();
     }
+
+    @Override
+    public ServiceResult setBoardUnLike(Long id, String email) {
+
+        Optional<Board> optionalBoard = boardRepository.findById(id);
+        if(!optionalBoard.isPresent()) {
+            return ServiceResult.fail("이미 게시글이 존재하지 않습니다.");
+        }
+        Board board = optionalBoard.get();
+
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        if(!optionalUser.isPresent()) {
+            return ServiceResult.fail("이미 조회수가 있습니다.");
+        }
+        User user = optionalUser.get();
+
+        Optional<BoardLike> optionalBoardLike = boardLikeRepository.finddByBoardAndUser(board, user);
+        if (!optionalBoardLike.isPresent()) {
+            return ServiceResult.fail("좋아요한 내용이 없습니다.");
+        }
+        BoardLike boardLike = optionalBoardLike.get();
+
+        boardLikeRepository.delete(boardLike);
+        return ServiceResult.success();
+    }
 }
