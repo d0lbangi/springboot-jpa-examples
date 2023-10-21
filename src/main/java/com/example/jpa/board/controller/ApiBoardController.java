@@ -1,6 +1,7 @@
 package com.example.jpa.board.controller;
 
 import com.example.jpa.board.entity.BoardType;
+import com.example.jpa.board.model.BoardTypeCount;
 import com.example.jpa.board.model.BoardTypeInput;
 import com.example.jpa.board.model.BoardTypeUsing;
 import com.example.jpa.board.model.ServiceResult;
@@ -103,6 +104,18 @@ public class ApiBoardController {
            return ResponseEntity.ok().body(ResponseMessage.fail(result.getMessage()));
        }
        return ResponseEntity.ok().body(ResponseMessage.success());
+   }
+
+
+   /**
+    * 66. 게시판별 작성된 게시글의 개수를 리턴하는 API 작성
+    * - 현재 사용가능한 게시판에 대해서 게시글의 개수 리턴
+    * */
+   @GetMapping("/api/board/type/count")
+   public ResponseEntity<?>  boardTypeCount() {
+
+       List<BoardTypeCount> list = boardService.getBoardTypeCount();
+       return ResponseEntity.ok().body(list);
    }
 }
 
