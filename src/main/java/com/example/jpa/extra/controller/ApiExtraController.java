@@ -5,6 +5,7 @@ import com.example.jpa.board.entity.BoardType;
 import com.example.jpa.board.model.*;
 import com.example.jpa.board.service.BoardService;
 import com.example.jpa.common.model.ResponseResult;
+import com.example.jpa.extra.model.AirInput;
 import com.example.jpa.extra.model.OpenApiResult;
 import com.example.jpa.extra.model.PharmacySearch;
 import com.example.jpa.notice.model.ResponseError;
@@ -119,6 +120,7 @@ public class ApiExtraController {
      * - 시도/군구 단위 검색기능에 대한 구현을 주기
      * - 결과 데이터를 모델로 매핑하여 처리
      */
+    /*
     @GetMapping("/api/extra/pharmacy")
     public ResponseEntity<?> pharmacy(@RequestBody PharmacySearch pharmacySearch) {
 
@@ -155,6 +157,35 @@ public class ApiExtraController {
         }
 
         return ResponseResult.success(jsonResult);
+    }
+    */
+
+    /**
+     * 89. 미세먼지 정보 조회(공공 API)를 통해서 내용을 내리는 API 작성
+     */
+    @GetMapping("/api/extra/air")
+    public String air(@RequestBody AirInput airInput) {
+
+    String apiKey = "";
+    String url = "";
+
+    String apiResult = "";
+
+    try {
+        URI uri = new URI(String.format(url, apiKey, URLEncoder.encode(airInput.getSearchSido(), "UTF-8")));
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
+        String result = restTemplate.getForObject(uri, String.class);
+
+        apiResult = result;
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return apiResult;
     }
 }
 
