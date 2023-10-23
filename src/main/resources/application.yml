@@ -1,4 +1,5 @@
 
+
 spring:
   h2:
     console:
@@ -7,7 +8,7 @@ spring:
 
   datasource:
     url: jdbc:h2:mem:backofficeDb
-#    url: jdbc:h2:file:C:\Users\d0d0l\OneDrive\Desktop\zerobase_reponsitory\MyCode\springboot-jpa-examples\BulletinBoardFunction\backofficeDb
+    # url: jdbc:h2:file:C:\Users\d0d0l\OneDrive\Desktop\zerobase_reponsitory\MyCode\springboot-jpa-examples\BulletinBoardFunction\backofficeDb
     driver-class-name: org.h2.Driver
     username: root
     password: '1111'
@@ -29,16 +30,31 @@ spring:
 
   mustache:
     suffix: .html
+  mail:
+    username: d0d0lbangi13@gmail.com
+    password: 1111
+    host: smtp.gmail.com
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
 
 logging:
   level:
     org.hibernate.SQL: trace
     org.hibernate.type: trace
   file:
-    name: ./logs/spring-spa.log
+    name: ./logs/spring-jpa.log
 
-######### 네이버 API
+
+############ 네이버API
+
 naver-app:
-  client-id: iOCPedx2INBZNHzYILLM
-  client-secret: JtqanJCVDF
+  client-id: xxxxxxxxxxxxxxxxxxxx
+  client-secret: xxxxxxxxxx
+
 

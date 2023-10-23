@@ -21,6 +21,7 @@ import com.example.jpa.user.exception.UserNotFoundExcetpion;
 import com.example.jpa.user.model.*;
 import com.example.jpa.user.repository.UserRepository;
 import com.example.jpa.user.service.PointService;
+import com.example.jpa.user.service.UserService;
 import com.example.jpa.util.JWTUtils;
 import com.example.jpa.util.PasswordUtils;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +51,7 @@ public class ApiUserController {
     private final NoticeLikeRepository noticeLikeRepository;
     private final BoardService boardService;
     private final PointService pointService;
+    private final UserService userService;
 
     /**
      31. 사용자 등록시 입력값이 유효하지 않은 경우 예외를 발생시키는 기능을 작성해 보세요.
@@ -582,6 +584,16 @@ public class ApiUserController {
         }
 
         ServiceResult result  = pointService.addPoint(email, userPointInput);
+        return ResponseResult.result(result);
+    }
+
+    /**
+     * 95. 회원가입시 가입된 회원에게 가입메일을 전송하는 API 작성
+     * */
+    @PostMapping("/api/public/user") // 본인 사용 중인 이메일의 회원가입
+    public ResponseEntity<?> addUser(@RequestBody UserInput userInput) {
+
+        ServiceResult result = userService.addUser(userInput);
         return ResponseResult.result(result);
     }
 

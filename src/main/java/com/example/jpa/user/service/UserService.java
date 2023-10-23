@@ -2,10 +2,7 @@ package com.example.jpa.user.service;
 
 import com.example.jpa.board.model.ServiceResult;
 import com.example.jpa.user.entity.User;
-import com.example.jpa.user.model.UserLogCount;
-import com.example.jpa.user.model.UserLogin;
-import com.example.jpa.user.model.UserNoticeCount;
-import com.example.jpa.user.model.UserSummary;
+import com.example.jpa.user.model.*;
 
 import java.util.List;
 
@@ -36,4 +33,9 @@ public interface UserService {
      * 로그인 정보 확인
      * */
     User login(UserLogin userLogin);
+
+    /**
+     * 회원 가입
+     */
+    ServiceResult addUser(UserInput userInput);
 }
