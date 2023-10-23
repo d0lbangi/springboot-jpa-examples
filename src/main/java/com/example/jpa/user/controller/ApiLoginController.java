@@ -1,5 +1,7 @@
 package com.example.jpa.user.controller;
 
+import com.example.jpa.board.entity.Board;
+import com.example.jpa.board.service.BoardService;
 import com.example.jpa.common.exception.BizException;
 import com.example.jpa.common.model.ResponseResult;
 import com.example.jpa.notice.model.ResponseError;
@@ -21,6 +23,7 @@ public class ApiLoginController {
 
 
     private final UserService userService;
+    private final BoardService boardService;
 
 
     /**
@@ -72,6 +75,22 @@ public class ApiLoginController {
             return ResponseResult.fail("JWT 생성에 실패하였습니다.");
         }
         return ResponseResult.success(userLoginToken);
+    }
+
+    /**
+     * 85. AOP의 Around를 이용하여 게시판 상세 조회에 대한 히스토리 기록하는 기능 작성
+     */
+    @GetMapping("/api/board/{id}")
+    public ResponseEntity<?> detail(@PathVariable Long id) {
+
+        Board board = null;
+        try {
+            board = boardService.detail(id);
+        } catch (BizException e) {
+            return ResponseResult.fail(e.getMessage());
+        }
+            return ResponseResult.success(board);
+
     }
 }
 
