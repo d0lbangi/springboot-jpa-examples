@@ -37,5 +37,8 @@ logging:
   file:
     name: ./logs/spring-spa.log
 
-
+######### 네이버 API
+naver-app:
+  client-id: iOCPedx2INBZNHzYILLM
+  client-secret: JtqanJCVDF
 
