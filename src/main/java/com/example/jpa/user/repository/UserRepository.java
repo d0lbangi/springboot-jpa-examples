@@ -26,6 +26,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     long countByStatus(UserStatus userStatus);
 
     //JPQL
-    @Query(" select u from User u where u.regDate between :startDate and :endDate ")
+    @Query(" select u from Logs u where u.regDate between :startDate and :endDate ")
     List<User> findToday(LocalDateTime startDate, LocalDateTime endDate);
 }
