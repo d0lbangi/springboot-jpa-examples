@@ -38,4 +38,9 @@ public interface UserService {
      * 회원 가입
      */
     ServiceResult addUser(UserInput userInput);
+
+    /**
+     * 비밀번호 초기화 진행
+     */
+    ServiceResult resetPassword(UserPasswordResetInput userPasswordResetInput);
 }

@@ -7,6 +7,7 @@ import com.example.jpa.board.entity.Board;
 import com.example.jpa.board.entity.BoardComment;
 import com.example.jpa.board.model.ServiceResult;
 import com.example.jpa.board.service.BoardService;
+import com.example.jpa.common.exception.BizException;
 import com.example.jpa.common.model.ResponseResult;
 import com.example.jpa.notice.entity.Notice;
 import com.example.jpa.notice.entity.NoticeLike;
@@ -595,6 +596,25 @@ public class ApiUserController {
 
         ServiceResult result = userService.addUser(userInput);
         return ResponseResult.result(result);
+    }
+
+    /**
+     * 96. 비밀번호 초기화를 위해서 이메일로 인증코드를 전송하는 API 작성
+     * */
+    @PostMapping("/api/public/user/password/reset") // 본인 사용 중인 이메일의 회원가입
+    public ResponseEntity<?> resetPassword(@RequestBody @Valid UserPasswordResetInput userPasswordResetInput, Errors errors) {
+
+        if (errors.hasErrors()) {
+            return ResponseResult.fail("입력값이 정확하지 않습니다", ResponseError.of(errors.getAllErrors()));
+        }
+
+        ServiceResult result = null;
+        try {
+            result = userService.resetPassword(userPasswordResetInput);
+        } catch (BizException e) {
+            return ResponseResult.fail(e.getMessage());
+        }
+            return ResponseResult.result(result);
     }
 
 }

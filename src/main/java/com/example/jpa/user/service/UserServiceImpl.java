@@ -5,6 +5,8 @@ import com.example.jpa.common.MailComponent;
 import com.example.jpa.common.exception.BizException;
 import com.example.jpa.common.model.ResponseResult;
 import com.example.jpa.logs.repository.LogService;
+import com.example.jpa.mail.entity.MailTemplate;
+import com.example.jpa.mail.repository.MailTemplateRepository;
 import com.example.jpa.user.entity.User;
 import com.example.jpa.user.entity.UserInterest;
 import com.example.jpa.user.model.*;
@@ -22,6 +24,7 @@ import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -32,6 +35,7 @@ public class UserServiceImpl implements UserService {
     private final UserInterestRepository userInterestRepository;
 
     private final MailComponent mailComponent;
+    private final MailTemplateRepository mailTemplateRepository;
 
     @Override
     public UserSummary getUserStatusCount() {
@@ -183,6 +187,38 @@ public class UserServiceImpl implements UserService {
 
 
         mailComponent.send(fromEmail, fromName, toEmail, toName, title, contents);
+        return ServiceResult.success();
+    }
+
+    @Override
+    public ServiceResult resetPassword(UserPasswordResetInput userInput) {
+
+        Optional<User> optionalUser = userRepository.findByEmailAndUserName(userInput.getEmail(), userInput.getUserName());
+        if (optionalUser.isPresent()) {
+            throw new BizException("회원 정보가 존재하지 않습니다.");
+        }
+        User user = optionalUser.get();
+
+        String passwordResetKey = UUID.randomUUID().toString();
+        user.setPasswordResetYn(true);
+        user.setPasswordResetKey(passwordResetKey);
+        userRepository.save(user);
+
+        String serverUrl = "http://localhost:8080";
+
+        Optional<MailTemplate> optionalMailTemplate = mailTemplateRepository.findMailTemplateById("USER_RESET_PASSWORD");
+        optionalMailTemplate.ifPresent(e -> {
+
+            String FromEmail = e.getSendEmail();
+            String FromUserName = e.getSendUserName();
+            String title = e.getTitle().replaceAll("\\{USER_NAME\\}", user.getUserName());
+            String contents = e.getContents().replaceAll("\\{USER_NAME\\}", user.getUserName())
+                    .replaceAll("\\{SERVER_URL\\}", serverUrl)
+                    .replaceAll("\\{RESET_PASSWORD_KEY\\}", passwordResetKey);
+
+            mailComponent.send(FromEmail, FromUserName
+                    , user.getEmail(), user.getUserName(), title, contents);
+        });
         return ServiceResult.success();
     }
 
