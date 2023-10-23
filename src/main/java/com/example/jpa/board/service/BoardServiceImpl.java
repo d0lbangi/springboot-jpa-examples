@@ -3,8 +3,11 @@ package com.example.jpa.board.service;
 import com.example.jpa.board.entity.*;
 import com.example.jpa.board.model.*;
 import com.example.jpa.board.repository.*;
+import com.example.jpa.common.MailComponent;
 import com.example.jpa.common.exception.BizException;
 import com.example.jpa.common.model.ResponseResult;
+import com.example.jpa.mail.entity.MailTemplate;
+import com.example.jpa.mail.repository.MailTemplateRepository;
 import com.example.jpa.user.entity.User;
 import com.example.jpa.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +34,10 @@ public class BoardServiceImpl implements BoardService{
     private final BoardScrapRepository boardScrapRepository;
     private final BoardBookmarkRepository boardBookmarkRepository;
     private final BoardCommentRepository boardCommentRepository;
+
+    private final MailTemplateRepository mailTemplateRepository;
+    private final MailComponent mailComponent;
+
     @Override
     public ServiceResult addBoard(BoardTypeInput boardTypeInput) {
 
@@ -452,6 +459,21 @@ public class BoardServiceImpl implements BoardService{
                 .regDate(LocalDateTime.now())
                 .build();
         boardRepository.save(board);
+
+        // 메일 전송 로직
+        Optional<MailTemplate> optionalMailTemplate = mailTemplateRepository.findMailTemplateById("BOARD_ADD");
+        optionalMailTemplate.ifPresent((e)-> {
+
+            String FromEmail = e.getSendEmail();
+            String FromUserName = e.getSendUserName();
+            String title       = e.getTitle().replaceAll("\\{USER_NAME\\}", user.getUserName());
+            String contents = e.getContents().replaceAll("\\{BOARD_NAME\\}", board.getTitle())
+                                             .replaceAll("\\{BOARD_CONTENTS\\}", board.getContents());
+
+            mailComponent.send(FromEmail, FromUserName
+            , user.getEmail(), user.getUserName(), title, contents);
+
+        });
 
         return ServiceResult.success();
     }

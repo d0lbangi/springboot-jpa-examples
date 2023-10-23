@@ -273,7 +273,7 @@ public class ApiBoardController {
      * - 게시글 쓰기 기능 구현(/api/board)
      * - 글쓰기 API 호출 시 토큰 유효성 검사
      */
-    @PostMapping("/api/board")
+/*    @PostMapping("/api/board")
     public ResponseEntity<?> add(
             @RequestHeader("F-TOKEN") String token
                     , @RequestBody BoardInput boardInput) {
@@ -282,6 +282,20 @@ public class ApiBoardController {
 
             ServiceResult result = boardService.add(email, boardInput);
             return ResponseResult.result(result);
+    }*/
+
+    /**
+     * 97. 게시판에 글을 작성했을 때 사용자에게 작성된 글의 정보를 메일로 전송하는 API 작성
+     */
+    @PostMapping("/api/board")
+    public ResponseEntity<?> add(
+            @RequestHeader("F-TOKEN") String token
+            , @RequestBody BoardInput boardInput) {
+
+        String email = JWTUtils.getIssuer(token);
+
+        ServiceResult result = boardService.add(email, boardInput);
+        return ResponseResult.result(result);
     }
 }
 
