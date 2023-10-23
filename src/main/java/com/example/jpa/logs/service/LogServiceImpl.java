@@ -24,4 +24,9 @@ public class LogServiceImpl implements LogService {
 
 
     }
+
+    @Override
+    public void deleteLog() {
+        logsRepository.deleteAll();
+    }
 }

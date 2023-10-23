@@ -206,7 +206,7 @@ public class UserServiceImpl implements UserService {
 
         String serverUrl = "http://localhost:8080";
 
-        Optional<MailTemplate> optionalMailTemplate = mailTemplateRepository.findMailTemplateById("USER_RESET_PASSWORD");
+        Optional<MailTemplate> optionalMailTemplate = mailTemplateRepository.findByTemplateId("USER_RESET_PASSWORD");
         optionalMailTemplate.ifPresent(e -> {
 
             String FromEmail = e.getSendEmail();

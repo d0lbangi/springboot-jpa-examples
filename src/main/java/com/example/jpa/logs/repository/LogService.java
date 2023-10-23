@@ -5,4 +5,6 @@ import org.springframework.stereotype.Repository;
 public interface LogService  {
 
     void add(String text);
+
+    void deleteLog();
 }
