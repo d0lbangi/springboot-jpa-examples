@@ -43,4 +43,9 @@ public interface UserService {
      * 비밀번호 초기화 진행
      */
     ServiceResult resetPassword(UserPasswordResetInput userPasswordResetInput);
+
+    /**
+     * 서비스 이용내역 통지
+     */
+    void sendServiceNotice();
 }
