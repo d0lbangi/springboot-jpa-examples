@@ -8,6 +8,7 @@ import com.example.jpa.common.model.ResponseResult;
 import com.example.jpa.user.entity.User;
 import com.example.jpa.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.*;
@@ -419,5 +420,11 @@ public class BoardServiceImpl implements BoardService{
             throw new BizException("게시글이 존재하지 않습니다.");
         }
         return optionalBoard.get();
+    }
+
+    @Override
+    public List<Board> list() {
+
+        return boardRepository.findAll();
     }
 }

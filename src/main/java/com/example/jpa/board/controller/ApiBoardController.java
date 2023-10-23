@@ -1,9 +1,11 @@
 package com.example.jpa.board.controller;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.example.jpa.board.entity.Board;
 import com.example.jpa.board.entity.BoardType;
 import com.example.jpa.board.model.*;
 import com.example.jpa.board.service.BoardService;
+import com.example.jpa.common.exception.BizException;
 import com.example.jpa.common.model.ResponseResult;
 import com.example.jpa.notice.model.ResponseError;
 import com.example.jpa.user.model.ResponseMessage;
@@ -239,6 +241,31 @@ public class ApiBoardController {
         }
         ServiceResult result = boardService.addBadReport(id, email, boardBadReportInput);
         return ResponseResult.result(result);
+    }
+
+    /**
+     * 85. AOP의 Around를 이용하여 게시판 상세 조회에 대한 히스토리 기록하는 기능 작성
+     */
+    @GetMapping("/api/board/{id}")
+    public ResponseEntity<?> detail(@PathVariable Long id) {
+
+        Board board = null;
+        try {
+            board = boardService.detail(id);
+        } catch (BizException e) {
+            return ResponseResult.fail(e.getMessage());
+        }
+        return ResponseResult.success(board);
+    }
+
+    /**
+     * 92. 인터셉터를 활용하여 API요청에 대한 정보를 log에 기록하는 API 작성
+     */
+    @GetMapping("/api/board")
+    public ResponseEntity<?> list() {
+
+        List<Board> list = boardService.list();
+        return ResponseResult.success(list);
     }
 }
 

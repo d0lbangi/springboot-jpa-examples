@@ -76,24 +76,6 @@ public class ApiLoginController {
         }
         return ResponseResult.success(userLoginToken);
     }
-
-    /**
-     * 85. AOP의 Around를 이용하여 게시판 상세 조회에 대한 히스토리 기록하는 기능 작성
-     */
-    @GetMapping("/api/board/{id}")
-    public ResponseEntity<?> detail(@PathVariable Long id) {
-
-        Board board = null;
-        try {
-            board = boardService.detail(id);
-        } catch (BizException e) {
-            return ResponseResult.fail(e.getMessage());
-        }
-            return ResponseResult.success(board);
-
-
-
-    }
 }
 
 
