@@ -15,5 +15,5 @@ import java.util.Optional;
 public interface MailTemplateRepository extends JpaRepository<MailTemplate, Long> {
 
 
-    Optional<MailTemplate> findMailTemplateById(String templateId);
+    Optional<MailTemplate> findByTemplateId(String templateId);
 }

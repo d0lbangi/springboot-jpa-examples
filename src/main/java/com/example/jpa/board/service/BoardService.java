@@ -107,4 +107,10 @@ public interface BoardService {
      * 게시글 작성
      */
     ServiceResult add(String email, BoardInput boardInput);
+
+    /**
+     * 문의 게시판 답변
+     */
+    ServiceResult replyBoard(Long id, BoardReplyInput boardReplyInput);
+
 }

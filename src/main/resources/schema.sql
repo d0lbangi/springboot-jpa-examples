@@ -84,6 +84,8 @@ create table BOARD
     PUBLISH_START_DATE  DATE,
     PUBLISH_END_DATE    DATE,
 
+    replyContents CLOB,
+
     REPLY_CONTENTS      CLOB,
 
     constraint FK_BOARD_BOARD_TYPE_ID foreign key (BOARD_TYPE_ID) references BOARD_TYPE (ID),
